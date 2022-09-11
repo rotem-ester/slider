@@ -5,7 +5,6 @@ function calcValueFromPositionX(factor, positionX, offsetLeft, range, width) {
     return (factor + (((positionX - offsetLeft) * range) / width)).toFixed(2);
 }
 function calcPositionXFromValue(value, factor, width, range, offsetLeft) {
-    console.log(value, factor, width, range, offsetLeft);
     return Math.round((((value - factor) * width) / range) + offsetLeft);
 }
 function calcPositionYFromValue(value, factor, width, range, offsetTop) {
@@ -65,7 +64,7 @@ function createSlider(min, max, idSuffix, initialValue) {
     document.body.appendChild(slider);
     const bar = createBar(slider, range, factor, idSuffix);
     const positionX = calcPositionXFromValue(initialValue, factor, bar.offsetWidth, range, bar.offsetLeft);
-    const positionY = slider.offsetTop;
+    const positionY = bar.offsetTop;
     createCursor(slider, idSuffix, positionX, positionY);
     createValueField(slider, initialValue, idSuffix);
     return slider;
@@ -107,5 +106,6 @@ document.body.addEventListener("mouseup", (mouseEvent) => {
     isDown = false;
     activeSlider = "";
 });
-const slider1 = createSlider(0, 100, "1", 50);
+const slider1 = createSlider(20, 100, "1", 80.9);
+const slider2 = createSlider(20, 100, "2", 80.9);
 //# sourceMappingURL=src.js.map

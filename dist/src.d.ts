@@ -14,3 +14,4 @@ declare function createBar(slider: HTMLDivElement, range: number, factor: number
 declare function createSlider(min: number, max: number, idSuffix: string, initialValue: number): HTMLDivElement;
 declare const header: HTMLHeadingElement;
 declare const slider1: HTMLDivElement;
+declare const slider2: HTMLDivElement;

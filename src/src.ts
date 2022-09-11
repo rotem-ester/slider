@@ -12,7 +12,6 @@ function calcValueFromPositionX(factor: number, positionX: number, offsetLeft: n
 }
 
 function calcPositionXFromValue(value: number, factor: number, width: number, range: number, offsetLeft: number): number {
-    console.log(value, factor, width, range, offsetLeft)
     return Math.round(( ( (value - factor) * width ) / range ) + offsetLeft)
 }
 
@@ -85,7 +84,6 @@ function createSlider(min: number, max: number, idSuffix: string, initialValue: 
     const range = max - min
     const factor = min      // in case min is != 0, for normalization purpose
 
-    
     const slider = document.createElement("div")
     slider.id = "slider" + idSuffix
     slider.className = "slider"
@@ -96,7 +94,7 @@ function createSlider(min: number, max: number, idSuffix: string, initialValue: 
     const bar = createBar(slider, range, factor, idSuffix)
  
     const positionX = calcPositionXFromValue(initialValue, factor, bar.offsetWidth, range, bar.offsetLeft)
-    const positionY = slider.offsetTop
+    const positionY = bar.offsetTop
 
     createCursor(slider, idSuffix, positionX, positionY)
     createValueField(slider, initialValue, idSuffix)
@@ -146,6 +144,7 @@ document.body.addEventListener("mouseup", (mouseEvent) => {
     activeSlider = ""
 })
 
-const slider1 = createSlider(0, 100, "1", 50)
+const slider1 = createSlider(20, 100, "1", 80.9)
+const slider2 = createSlider(20, 100, "2", 80.9)
 
 
