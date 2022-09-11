@@ -7,8 +7,6 @@ function calcValueFromPositionX(factor, positionX, offsetLeft, range, width) {
 function calcPositionXFromValue(value, factor, width, range, offsetLeft) {
     return Math.round((((value - factor) * width) / range) + offsetLeft);
 }
-function calcPositionYFromValue(value, factor, width, range, offsetTop) {
-}
 function createValueField(slider, value, idSuffix) {
     const valueField = document.createElement("div");
     valueField.id = "value" + idSuffix;
@@ -44,17 +42,34 @@ function createBar(slider, range, factor, idSuffix) {
         var _a, _b;
         const newValue = calcValueFromPositionX(factor, click.clientX, bar.offsetLeft, range, bar.offsetWidth);
         const value = (_a = bar.parentElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName("value")[0];
-        if (value) {
-            value.innerHTML = "Value: " + newValue;
-        }
         const cursor = (_b = bar.parentElement) === null || _b === void 0 ? void 0 : _b.getElementsByClassName("cursor")[0];
-        if (cursor) {
-            cursor.style.left = click.clientX + "px";
+        const movingDirection = -(parseInt(cursor.style.left) - click.clientX);
+        let currPosition = parseInt(cursor.style.left);
+        const intervalId = setInterval(cursoreMove, 1);
+        function cursoreMove() {
+            if (parseInt(cursor.style.left) == click.clientX) {
+                if (value) {
+                    value.innerHTML = "Value: " + newValue;
+                }
+                clearInterval(intervalId);
+            }
+            else {
+                if (movingDirection < 0) {
+                    currPosition--;
+                }
+                else {
+                    currPosition++;
+                }
+                cursor.style.left = currPosition + "px";
+            }
         }
     });
     return bar;
 }
 function createSlider(min, max, idSuffix, initialValue) {
+    if (initialValue > max) {
+        throw new Error("initial value is out of range");
+    }
     const range = max - min;
     const factor = min;
     const slider = document.createElement("div");
@@ -106,6 +121,7 @@ document.body.addEventListener("mouseup", (mouseEvent) => {
     isDown = false;
     activeSlider = "";
 });
-const slider1 = createSlider(20, 100, "1", 80.9);
+const slider1 = createSlider(20, 200, "1", 80.9);
 const slider2 = createSlider(-100, 100, "2", 0);
+const slider3 = createSlider(0, 100, "3", 45);
 //# sourceMappingURL=src.js.map

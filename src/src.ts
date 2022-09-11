@@ -15,10 +15,6 @@ function calcPositionXFromValue(value: number, factor: number, width: number, ra
     return Math.round(( ( (value - factor) * width ) / range ) + offsetLeft)
 }
 
-function calcPositionYFromValue(value: number, factor: number, width: number, range: number, offsetTop: number) {
-
-}
-
 function createValueField(slider: HTMLDivElement, value: number, idSuffix: string): HTMLDivElement {
     const valueField = document.createElement("div")
     valueField.id = "value" + idSuffix
@@ -62,18 +58,29 @@ function createBar(slider: HTMLDivElement, range: number, factor: number, idSuff
     slider.appendChild(bar)
 
     bar.addEventListener("click", (click) => {
-        // update new value
         const newValue = calcValueFromPositionX(factor, click.clientX, bar.offsetLeft, range, bar.offsetWidth)
         const value = bar.parentElement?.getElementsByClassName("value")[0]
-
-        if (value) {
-            value.innerHTML = "Value: " + newValue
-        }
-        
-        // update cursor position
         const cursor = bar.parentElement?.getElementsByClassName("cursor")[0] as HTMLDivElement
-        if (cursor) {
-            cursor.style.left = click.clientX + "px"
+        const movingDirection = -(parseInt(cursor.style.left) - click.clientX)
+        let currPosition = parseInt(cursor.style.left)
+
+        const intervalId = setInterval(cursoreMove, 1)
+
+        // util function that describe the cursor moving conditions
+        function cursoreMove() {
+            if (parseInt(cursor.style.left) == click.clientX){
+                if (value) {
+                    value.innerHTML = "Value: " + newValue
+                }
+                clearInterval(intervalId)
+            } else {
+                if (movingDirection < 0) {
+                    currPosition--
+                } else {
+                    currPosition++  
+                }
+                cursor.style.left = currPosition + "px"
+            }
         }
     })
 
@@ -81,6 +88,10 @@ function createBar(slider: HTMLDivElement, range: number, factor: number, idSuff
 }
 
 function createSlider(min: number, max: number, idSuffix: string, initialValue: number){
+    if (initialValue > max) {
+        throw new Error("initial value is out of range")
+    }
+
     const range = max - min
     const factor = min      // in case min is != 0, for normalization purpose
 
@@ -144,6 +155,7 @@ document.body.addEventListener("mouseup", (mouseEvent) => {
     activeSlider = ""
 })
 
-const slider1 = createSlider(20, 100, "1", 80.9)
+const slider1 = createSlider(20, 200, "1", 80.9)
 const slider2 = createSlider(-100, 100, "2", 0)
+const slider3 = createSlider(0, 100, "3", 45)
 
