@@ -1,10 +1,4 @@
-export declare class Bar {
-    range: number;
-    factor: number;
-    id: string;
-    className: string;
-    element: HTMLDivElement;
-    constructor(min: number, max: number, idSuffix: string);
-    private createHtmlElement;
-    getElement(): HTMLDivElement;
-}
+export declare function createBar(min: number, max: number, idSuffix: string): HTMLDivElement;
+export declare function addBarEventListeners(): void;
+export declare function getCursor(): HTMLDivElement | undefined;
+export declare function getValue(): HTMLDivElement | undefined;

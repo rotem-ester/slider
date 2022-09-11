@@ -1,90 +1,48 @@
-class ValueField {
-    constructor(value, idSuffix) {
-        this.id = "value" + idSuffix;
-        this.className = "value";
-        this.createElement(value);
-    }
-    createElement(value) {
-        const valueComp = document.createElement("div");
-        valueComp.id = this.id;
-        valueComp.className = this.className;
-        valueComp.innerHTML = "Value: " + value;
-        this.element = valueComp;
-    }
-    getElement() {
-        return this.element;
-    }
+function calcValue(factor, positionX, offsetLeft, range, width) {
+    return factor + (((positionX - offsetLeft) * range) / width);
 }
-class Cursor {
-    constructor(idSuffix) {
-        this.id = "cursor" + idSuffix;
-        this.className = "cursor";
-        this.createElement();
-    }
-    createElement() {
-        const cursor = document.createElement("div");
-        cursor.id = this.id;
-        cursor.className = this.className;
-        this.element = cursor;
-    }
-    getElement() {
-        return this.element;
-    }
+function calcPositionX(value, factor, width, range, offsetLeft) {
+    console.log(value, factor, width, range, offsetLeft);
+    return Math.round((((value - factor) * width) / range) + offsetLeft);
 }
-class Bar {
-    constructor(min, max, idSuffix) {
-        this.range = max - min;
-        this.factor = min;
-        this.id = "bar" + idSuffix;
-        this.className = "bar";
-        this.createHtmlElement();
-    }
-    createHtmlElement() {
-        const bar = document.createElement("div");
-        bar.id = this.id;
-        bar.className = this.className;
-        this.element = bar;
-    }
-    getElement() {
-        return this.element;
-    }
-    calcValue(factor, positionX, offsetLeft, range, width) {
-        return factor + (((positionX - offsetLeft) * range) / width);
-    }
-    calcPositionX(value, factor, width, range, offsetLeft) {
-        console.log(value, factor, width, range, offsetLeft);
-        return Math.round((((value - factor) * width) / range) + offsetLeft);
-    }
+function createValueField(value, idSuffix) {
+    const valueField = document.createElement("div");
+    valueField.id = "value" + idSuffix;
+    valueField.className = "value";
+    valueField.innerHTML = "Value: " + value;
+    return valueField;
 }
-class Slider {
-    constructor(min, max, idSuffix, initialValue) {
-        this.range = max - min;
-        this.factor = min;
-        this.id = "slider" + idSuffix;
-        this.className = "slider";
-        this.bar = new Bar(min, max, idSuffix);
-        this.cursor = new Cursor(idSuffix);
-        this.value = new ValueField(initialValue, idSuffix);
-        this.element = this.createHtmlElement();
-    }
-    createHtmlElement() {
-        const slider = document.createElement("div");
-        slider.id = this.id;
-        slider.className = this.className;
-        slider.appendChild(this.bar.getElement());
-        slider.appendChild(this.cursor.getElement());
-        slider.appendChild(this.value.getElement());
-        return slider;
-    }
-    getElement() {
-        return this.element;
-    }
+function createCursor(idSuffix) {
+    const cursor = document.createElement("div");
+    cursor.id = "cursor" + idSuffix;
+    cursor.className = "cursor";
+    return cursor;
+}
+function createBar(min, max, idSuffix) {
+    const range = max - min;
+    const factor = min;
+    const id = "bar" + idSuffix;
+    const className = "bar";
+    const bar = document.createElement("div");
+    bar.id = id;
+    bar.className = className;
+    return bar;
+}
+function createSlider(min, max, idSuffix, initialValue) {
+    const range = max - min;
+    const factor = min;
+    const slider = document.createElement("div");
+    slider.id = "slider" + idSuffix;
+    slider.className = "slider";
+    slider.appendChild(createBar(min, max, idSuffix));
+    slider.appendChild(createCursor(idSuffix));
+    slider.appendChild(createValueField(initialValue, idSuffix));
+    return slider;
 }
 const header = document.createElement("h1");
 header.id = "main-header";
 header.innerHTML = "SLIDER";
 document.body.appendChild(header);
-const slider1 = new Slider(0, 100, "1", 50);
-console.log(slider1.getElement());
-document.body.appendChild(slider1.getElement());
+const slider1 = createSlider(0, 100, "1", 50);
+document.body.appendChild(slider1);
 //# sourceMappingURL=src.js.map

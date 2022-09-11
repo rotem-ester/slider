@@ -1,138 +1,54 @@
-class ValueField {
-    id: string
-    className: string
-
-    element: HTMLDivElement
-
-    constructor(value: number, idSuffix: string) {
-        this.id = "value" + idSuffix
-        this.className = "value"
-
-        this.createElement(value)
-    }
-
-    private createElement(value: number) {
-        const valueComp = document.createElement("div")
-        valueComp.id = this.id
-        valueComp.className = this.className
-        valueComp.innerHTML = "Value: " + value
-
-        this.element = valueComp
-    }
-
-    getElement(): HTMLDivElement {
-        return this.element
-    }
+function calcValue(factor: number, positionX: number, offsetLeft: number, range: number, width: number) {
+    return factor + (((positionX - offsetLeft) * range) / width)
 }
 
-class Cursor {
-    id: string
-    className: string
-    initPositionX: number
-    initPositionY: number
-
-    element: HTMLDivElement
-
-    constructor(idSuffix: string){
-        this.id = "cursor" + idSuffix
-        this.className = "cursor"
-
-        this.createElement()
-    }
-
-    private createElement() {
-        const cursor = document.createElement("div")
-        cursor.id = this.id
-        cursor.className = this.className
-
-        this.element = cursor
-    }
-
-    getElement(): HTMLDivElement {
-        return this.element
-    }
+function calcPositionX(value: number, factor: number, width: number, range: number, offsetLeft: number) {
+    console.log(value, factor, width, range, offsetLeft)
+    return Math.round(( ( (value - factor) * width ) / range ) + offsetLeft)
 }
 
-class Bar {
-    range: number
-    factor: number  // in case the min value is > 0, for normalization purpose
-    id: string
-    className: string
+function createValueField(value: number, idSuffix: string): HTMLDivElement {
+    const valueField = document.createElement("div")
+    valueField.id = "value" + idSuffix
+    valueField.className = "value"
+    valueField.innerHTML = "Value: " + value
 
-    element: HTMLDivElement
-
-    constructor(min: number, max: number, idSuffix: string){
-        this.range = max - min
-        this.factor = min
-        this.id = "bar" + idSuffix
-        this.className = "bar"
-
-        this.createHtmlElement()
-
-        // this.element.addEventListener()
-    }
-
-    private createHtmlElement() {
-        const bar = document.createElement("div")
-        bar.id = this.id
-        bar.className = this.className
-
-        this.element = bar
-    }
-
-    getElement(): HTMLDivElement {
-        return this.element
-    }
-
-    calcValue(factor: number, positionX: number, offsetLeft: number, range: number, width: number) {
-        return factor + (((positionX - offsetLeft)* range) / width)
-    }
-    
-    calcPositionX(value: number, factor: number, width: number, range: number, offsetLeft: number) {
-        console.log(value, factor, width, range, offsetLeft)
-        return Math.round(( ( (value - factor) * width ) / range ) + offsetLeft)
-    }
+    return valueField
 }
 
-class Slider {
-    id: string
-    className: string
-    range: number
-    factor: number  // in case the min value is != 0, for normalization purpose
-    
-    bar: Bar
-    cursor: Cursor
-    value: ValueField
+function createCursor(idSuffix: string): HTMLDivElement{
+    const cursor = document.createElement("div")
+    cursor.id = "cursor" + idSuffix
+    cursor.className = "cursor"
 
-    element: HTMLDivElement
+    return cursor
+}
 
-    constructor(min: number, max: number, idSuffix: string, initialValue: number){
-        this.range = max - min
-        this.factor = min
-        this.id = "slider" + idSuffix
-        this.className = "slider"
+function createBar(min: number, max: number, idSuffix: string): HTMLDivElement{
+    const range = max - min
+    const factor = min
+    const id = "bar" + idSuffix
+    const className = "bar"
 
-        this.bar = new Bar(min, max, idSuffix)
-        this.cursor = new Cursor(idSuffix)
-        this.value = new ValueField(initialValue, idSuffix)
+    const bar = document.createElement("div")
+    bar.id = id
+    bar.className = className
 
-        this.element = this.createHtmlElement()
-    }
+    return bar
+}
 
-    private createHtmlElement(): HTMLDivElement {
-        const slider = document.createElement("div")
-        slider.id = this.id
-        slider.className = this.className
-        slider.appendChild(this.bar.getElement())
-        slider.appendChild(this.cursor.getElement())
-        slider.appendChild(this.value.getElement())
+function createSlider(min: number, max: number, idSuffix: string, initialValue: number){
+    const range = max - min
+    const factor = min
+ 
+    const slider = document.createElement("div")
+    slider.id = "slider" + idSuffix
+    slider.className = "slider"
+    slider.appendChild(createBar(min, max, idSuffix))
+    slider.appendChild(createCursor(idSuffix))
+    slider.appendChild(createValueField(initialValue, idSuffix))
 
-        return slider
-    }
-
-    getElement() {
-        return this.element
-    }
+    return slider
 }
 
 const header = document.createElement("h1")
@@ -140,6 +56,6 @@ header.id = "main-header"
 header.innerHTML = "SLIDER"
 document.body.appendChild(header)
 
-const slider1 = new Slider(0, 100, "1", 50)
-console.log(slider1.getElement())
-document.body.appendChild(slider1.getElement())
+const slider1 = createSlider(0, 100, "1", 50)
+document.body.appendChild(slider1)
+

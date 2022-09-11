@@ -1,8 +1,1 @@
-export declare class ValueField {
-    id: string;
-    className: string;
-    element: HTMLDivElement;
-    constructor(value: number, idSuffix: string);
-    private createElement;
-    getElement(): HTMLDivElement;
-}
+export declare function createValueField(value: number, idSuffix: string): HTMLDivElement;
