@@ -107,5 +107,5 @@ document.body.addEventListener("mouseup", (mouseEvent) => {
     activeSlider = "";
 });
 const slider1 = createSlider(20, 100, "1", 80.9);
-const slider2 = createSlider(20, 100, "2", 80.9);
+const slider2 = createSlider(-100, 100, "2", 0);
 //# sourceMappingURL=src.js.map
