@@ -1,0 +1,46 @@
+#main-header {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: teal;
+    text-align: center;
+    text-shadow: 2px 2px 5px rgb(170, 206, 180);
+}
+
+.value {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: teal;
+    font-weight: bold;
+}
+
+/* #container {
+    position: relative;         
+    display: grid;
+    column-gap: 0px;
+} */
+
+/* .block {
+    grid-row: 2;
+    margin: auto;
+    width: 100%;
+    height: 10px;
+    background-color: grey;
+    opacity: 0.5;
+} */
+
+.bar {
+    grid-row: 5;
+    grid-column: 1;
+    margin: auto;
+    width: 80%;
+    height: 10px;
+    background-color: grey;
+    opacity: 0.5;
+    border-radius: 50px;
+}
+
+.cursor {
+    position: absolute;         /* to make the cursor on top of the bar */
+    width: 20px;
+    height: 20px;
+    background-color: green;
+    border-radius: 10px;        /* to make the cursor round */           
+}
