@@ -27,7 +27,7 @@ function createCursor(slider: HTMLDivElement, idSuffix: string, positionX: numbe
     cursor.id = "cursor" + idSuffix
     cursor.className = "cursor"
     cursor.style["left"] = positionX + "px"
-    cursor.style["top"] = positionY + "px"
+    cursor.style["top"] = (positionY - 5) + "px"
 
     slider.appendChild(cursor)
 
@@ -79,8 +79,6 @@ function createSlider(min: number, max: number, idSuffix: string, initialValue: 
  
     const positionX = calcPositionXFromValue(initialValue, factor, bar.offsetWidth, range, bar.offsetLeft)
     const positionY = slider.offsetTop
-
-    console.log("cursor:", positionX, positionY)
 
     createCursor(slider, idSuffix, positionX, positionY)
     createValueField(slider, initialValue, idSuffix)

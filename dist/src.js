@@ -20,7 +20,7 @@ function createCursor(slider, idSuffix, positionX, positionY) {
     cursor.id = "cursor" + idSuffix;
     cursor.className = "cursor";
     cursor.style["left"] = positionX + "px";
-    cursor.style["top"] = positionY + "px";
+    cursor.style["top"] = (positionY - 5) + "px";
     slider.appendChild(cursor);
     return cursor;
 }
@@ -56,7 +56,6 @@ function createSlider(min, max, idSuffix, initialValue) {
     const bar = createBar(slider, range, factor, idSuffix);
     const positionX = calcPositionXFromValue(initialValue, factor, bar.offsetWidth, range, bar.offsetLeft);
     const positionY = slider.offsetTop;
-    console.log("cursor:", positionX, positionY);
     createCursor(slider, idSuffix, positionX, positionY);
     createValueField(slider, initialValue, idSuffix);
     return slider;
