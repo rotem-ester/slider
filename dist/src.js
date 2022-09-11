@@ -1,3 +1,6 @@
+const sliderInfoMap = new Map();
+let isDown = false;
+let activeSlider;
 function calcValueFromPositionX(factor, positionX, offsetLeft, range, width) {
     return (factor + (((positionX - offsetLeft) * range) / width)).toFixed(2);
 }
@@ -22,6 +25,13 @@ function createCursor(slider, idSuffix, positionX, positionY) {
     cursor.style["left"] = positionX + "px";
     cursor.style["top"] = (positionY - 5) + "px";
     slider.appendChild(cursor);
+    cursor.addEventListener("mousedown", (mouseEvent) => {
+        isDown = true;
+        const parent = cursor.parentElement;
+        if (parent) {
+            activeSlider = parent.id;
+        }
+    });
     return cursor;
 }
 function createBar(slider, range, factor, idSuffix) {
@@ -42,7 +52,6 @@ function createBar(slider, range, factor, idSuffix) {
         if (cursor) {
             cursor.style.left = click.clientX + "px";
         }
-        console.log("bar:", bar.offsetWidth, bar.offsetLeft);
     });
     return bar;
 }
@@ -52,6 +61,7 @@ function createSlider(min, max, idSuffix, initialValue) {
     const slider = document.createElement("div");
     slider.id = "slider" + idSuffix;
     slider.className = "slider";
+    sliderInfoMap.set(slider.id, { range, factor });
     document.body.appendChild(slider);
     const bar = createBar(slider, range, factor, idSuffix);
     const positionX = calcPositionXFromValue(initialValue, factor, bar.offsetWidth, range, bar.offsetLeft);
@@ -64,5 +74,38 @@ const header = document.createElement("h1");
 header.id = "main-header";
 header.innerHTML = "SLIDER";
 document.body.appendChild(header);
+document.body.addEventListener("mousemove", (mouseEvent) => {
+    if (isDown) {
+        const slider = document.getElementById(activeSlider);
+        const sliderInfo = sliderInfoMap.get(activeSlider);
+        const value = slider === null || slider === void 0 ? void 0 : slider.getElementsByClassName("value")[0];
+        const cursor = slider === null || slider === void 0 ? void 0 : slider.getElementsByClassName("cursor")[0];
+        const bar = slider === null || slider === void 0 ? void 0 : slider.getElementsByClassName("bar")[0];
+        const minX = bar.offsetLeft;
+        const maxX = bar.offsetLeft + bar.offsetWidth;
+        let newValue = "";
+        if (sliderInfo) {
+            newValue = calcValueFromPositionX(sliderInfo.factor, mouseEvent.clientX, bar.offsetLeft, sliderInfo.range, bar.offsetWidth);
+            if (mouseEvent.clientX > maxX) {
+                cursor.style["left"] = (maxX - 20) + "px";
+                newValue = calcValueFromPositionX(sliderInfo.factor, maxX, bar.offsetLeft, sliderInfo.range, bar.offsetWidth);
+            }
+            else if (mouseEvent.clientX < minX) {
+                cursor.style["left"] = minX + "px";
+                newValue = calcValueFromPositionX(sliderInfo.factor, minX, bar.offsetLeft, sliderInfo.range, bar.offsetWidth);
+            }
+            else {
+                cursor.style["left"] = mouseEvent.clientX + "px";
+            }
+        }
+        if (value) {
+            value.innerHTML = "Value: " + newValue;
+        }
+    }
+});
+document.body.addEventListener("mouseup", (mouseEvent) => {
+    isDown = false;
+    activeSlider = "";
+});
 const slider1 = createSlider(0, 100, "1", 50);
 //# sourceMappingURL=src.js.map

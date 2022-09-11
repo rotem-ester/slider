@@ -1,3 +1,10 @@
+interface sliderInfo {
+    range: number;
+    factor: number;
+}
+declare const sliderInfoMap: Map<string, sliderInfo>;
+declare let isDown: boolean;
+declare let activeSlider: string;
 declare function calcValueFromPositionX(factor: number, positionX: number, offsetLeft: number, range: number, width: number): string;
 declare function calcPositionXFromValue(value: number, factor: number, width: number, range: number, offsetLeft: number): number;
 declare function calcPositionYFromValue(value: number, factor: number, width: number, range: number, offsetTop: number): void;

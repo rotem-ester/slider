@@ -20,6 +20,12 @@
     background-color: grey;
     opacity: 0.5;
     border-radius: 50px;
+    transition: opacity 1s;
+    transition: left 3s;
+}
+
+.bar:hover {
+    opacity: 1;
 }
 
 .cursor {
@@ -29,3 +35,4 @@
     background-color: green;
     border-radius: 10px;        /* to make the cursor round */     
 }
+

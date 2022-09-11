@@ -1,3 +1,12 @@
+interface sliderInfo {
+    range: number
+    factor: number
+}
+
+const sliderInfoMap = new Map<string, sliderInfo>()
+let isDown = false
+let activeSlider: string
+
 function calcValueFromPositionX(factor: number, positionX: number, offsetLeft: number, range: number, width: number): string {
     return (factor + (((positionX - offsetLeft) * range) / width)).toFixed(2)
 }
@@ -31,6 +40,15 @@ function createCursor(slider: HTMLDivElement, idSuffix: string, positionX: numbe
 
     slider.appendChild(cursor)
 
+    cursor.addEventListener("mousedown", (mouseEvent) => {
+        isDown = true
+        const parent = cursor.parentElement
+
+        if (parent) {
+            activeSlider = parent.id
+        }
+    })
+
     return cursor
 }
 
@@ -58,8 +76,6 @@ function createBar(slider: HTMLDivElement, range: number, factor: number, idSuff
         if (cursor) {
             cursor.style.left = click.clientX + "px"
         }
-
-        console.log("bar:", bar.offsetWidth, bar.offsetLeft)
     })
 
     return bar
@@ -68,11 +84,13 @@ function createBar(slider: HTMLDivElement, range: number, factor: number, idSuff
 function createSlider(min: number, max: number, idSuffix: string, initialValue: number){
     const range = max - min
     const factor = min      // in case min is != 0, for normalization purpose
- 
+
+    
     const slider = document.createElement("div")
     slider.id = "slider" + idSuffix
     slider.className = "slider"
-
+    sliderInfoMap.set(slider.id, {range, factor})
+    
     document.body.appendChild(slider)
 
     const bar = createBar(slider, range, factor, idSuffix)
@@ -90,6 +108,43 @@ const header = document.createElement("h1")
 header.id = "main-header"
 header.innerHTML = "SLIDER"
 document.body.appendChild(header)
+
+document.body.addEventListener("mousemove", (mouseEvent) => {
+    if (isDown) {
+        const slider = document.getElementById(activeSlider)
+        const sliderInfo = sliderInfoMap.get(activeSlider)
+        const value = slider?.getElementsByClassName("value")[0]
+        const cursor = slider?.getElementsByClassName("cursor")[0] as HTMLDivElement
+        const bar = slider?.getElementsByClassName("bar")[0] as HTMLDivElement
+        const minX = bar.offsetLeft
+        const maxX = bar.offsetLeft + bar.offsetWidth
+        let newValue = ""
+
+        if (sliderInfo) {
+            newValue = calcValueFromPositionX(sliderInfo.factor, mouseEvent.clientX, bar.offsetLeft, sliderInfo.range, bar.offsetWidth)
+    
+            if (mouseEvent.clientX > maxX) {
+                // 20 is the cursor diameter
+                cursor.style["left"] = (maxX - 20) + "px"
+                newValue = calcValueFromPositionX(sliderInfo.factor, maxX, bar.offsetLeft, sliderInfo.range, bar.offsetWidth)
+            } else if (mouseEvent.clientX < minX) {
+                cursor.style["left"] = minX + "px"
+                newValue = calcValueFromPositionX(sliderInfo.factor, minX, bar.offsetLeft, sliderInfo.range, bar.offsetWidth)
+            } else {
+                cursor.style["left"] = mouseEvent.clientX + "px"
+            }
+        }
+
+        if (value) {
+            value.innerHTML = "Value: " + newValue
+        }
+    }
+})
+
+document.body.addEventListener("mouseup", (mouseEvent) => {
+    isDown = false
+    activeSlider = ""
+})
 
 const slider1 = createSlider(0, 100, "1", 50)
 
