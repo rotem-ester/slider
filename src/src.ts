@@ -115,7 +115,7 @@ function createSlider(min: number, max: number, idSuffix: string, initialValue: 
 
 const header = document.createElement("h1")
 header.id = "main-header"
-header.innerHTML = "SLIDER"
+header.innerHTML = "Sliders be slidin'"
 document.body.appendChild(header)
 
 document.body.addEventListener("mousemove", (mouseEvent) => {
