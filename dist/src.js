@@ -40,27 +40,39 @@ function createBar(slider, range, factor, idSuffix) {
     slider.appendChild(bar);
     bar.addEventListener("click", (click) => {
         var _a, _b;
+        const pixelStep = 10;
         const newValue = calcValueFromPositionX(factor, click.clientX, bar.offsetLeft, range, bar.offsetWidth);
         const value = (_a = bar.parentElement) === null || _a === void 0 ? void 0 : _a.getElementsByClassName("value")[0];
         const cursor = (_b = bar.parentElement) === null || _b === void 0 ? void 0 : _b.getElementsByClassName("cursor")[0];
-        const movingDirection = -(parseInt(cursor.style.left) - click.clientX);
+        const movingDirection = click.clientX - parseInt(cursor.style.left);
         let currPosition = parseInt(cursor.style.left);
         const intervalId = setInterval(cursoreMove, 1);
         function cursoreMove() {
-            if (parseInt(cursor.style.left) == click.clientX) {
-                if (value) {
-                    value.innerHTML = "Value: " + newValue;
-                }
-                clearInterval(intervalId);
-            }
-            else {
-                if (movingDirection < 0) {
-                    currPosition--;
+            if (movingDirection <= 0) {
+                if (parseInt(cursor.style.left) <= click.clientX) {
+                    cursor.style.left = click.clientX + "px";
+                    if (value) {
+                        value.innerHTML = "Value: " + newValue;
+                    }
+                    clearInterval(intervalId);
                 }
                 else {
-                    currPosition++;
+                    currPosition -= pixelStep;
+                    cursor.style.left = currPosition + "px";
                 }
-                cursor.style.left = currPosition + "px";
+            }
+            else {
+                if (parseInt(cursor.style.left) >= click.clientX) {
+                    cursor.style.left = click.clientX + "px";
+                    if (value) {
+                        value.innerHTML = "Value: " + newValue;
+                    }
+                    clearInterval(intervalId);
+                }
+                else {
+                    currPosition += pixelStep;
+                    cursor.style.left = currPosition + "px";
+                }
             }
         }
     });
@@ -101,7 +113,7 @@ document.body.addEventListener("mousemove", (mouseEvent) => {
         if (sliderInfo) {
             newValue = calcValueFromPositionX(sliderInfo.factor, mouseEvent.clientX, bar.offsetLeft, sliderInfo.range, bar.offsetWidth);
             if (mouseEvent.clientX > maxX) {
-                cursor.style["left"] = (maxX - 20) + "px";
+                cursor.style["left"] = (maxX - 10) + "px";
                 newValue = calcValueFromPositionX(sliderInfo.factor, maxX, bar.offsetLeft, sliderInfo.range, bar.offsetWidth);
             }
             else if (mouseEvent.clientX < minX) {

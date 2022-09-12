@@ -58,28 +58,39 @@ function createBar(slider: HTMLDivElement, range: number, factor: number, idSuff
     slider.appendChild(bar)
 
     bar.addEventListener("click", (click) => {
+        const pixelStep = 10
         const newValue = calcValueFromPositionX(factor, click.clientX, bar.offsetLeft, range, bar.offsetWidth)
         const value = bar.parentElement?.getElementsByClassName("value")[0]
         const cursor = bar.parentElement?.getElementsByClassName("cursor")[0] as HTMLDivElement
-        const movingDirection = -(parseInt(cursor.style.left) - click.clientX)
+        const movingDirection = click.clientX - parseInt(cursor.style.left)
         let currPosition = parseInt(cursor.style.left)
 
         const intervalId = setInterval(cursoreMove, 1)
 
         // util function that describe the cursor moving conditions
         function cursoreMove() {
-            if (parseInt(cursor.style.left) == click.clientX){
-                if (value) {
-                    value.innerHTML = "Value: " + newValue
-                }
-                clearInterval(intervalId)
-            } else {
-                if (movingDirection < 0) {
-                    currPosition--
+            if (movingDirection <= 0) {
+                if (parseInt(cursor.style.left) <= click.clientX) {
+                    cursor.style.left = click.clientX + "px"
+                    if (value) {
+                        value.innerHTML = "Value: " + newValue
+                    }
+                    clearInterval(intervalId)
                 } else {
-                    currPosition++  
+                    currPosition -= pixelStep
+                    cursor.style.left = currPosition + "px"
                 }
-                cursor.style.left = currPosition + "px"
+            } else {
+                if (parseInt(cursor.style.left) >= click.clientX) {
+                    cursor.style.left = click.clientX + "px"
+                    if (value) {
+                        value.innerHTML = "Value: " + newValue
+                    }
+                    clearInterval(intervalId)
+                } else {
+                    currPosition += pixelStep
+                    cursor.style.left = currPosition + "px"
+                }
             }
         }
     })
@@ -134,7 +145,7 @@ document.body.addEventListener("mousemove", (mouseEvent) => {
     
             if (mouseEvent.clientX > maxX) {
                 // 20 is the cursor diameter
-                cursor.style["left"] = (maxX - 20) + "px"
+                cursor.style["left"] = (maxX - 10) + "px"
                 newValue = calcValueFromPositionX(sliderInfo.factor, maxX, bar.offsetLeft, sliderInfo.range, bar.offsetWidth)
             } else if (mouseEvent.clientX < minX) {
                 cursor.style["left"] = minX + "px"
