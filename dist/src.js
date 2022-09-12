@@ -82,6 +82,9 @@ function createSlider(min, max, idSuffix, initialValue) {
     if (initialValue > max) {
         throw new Error("initial value is out of range");
     }
+    if (min > max) {
+        throw new Error("min value is larger than max value");
+    }
     const range = max - min;
     const factor = min;
     const slider = document.createElement("div");

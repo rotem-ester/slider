@@ -103,6 +103,10 @@ function createSlider(min: number, max: number, idSuffix: string, initialValue: 
         throw new Error("initial value is out of range")
     }
 
+    if (min > max) {
+        throw new Error("min value is larger than max value")
+    }
+
     const range = max - min
     const factor = min      // in case min is != 0, for normalization purpose
 
